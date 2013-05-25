@@ -13,8 +13,10 @@
 _ATL_FUNC_INFO ClickEventInfo = { CC_STDCALL, VT_EMPTY, 2, { VT_DISPATCH, VT_BOOL|VT_BYREF } };
 
 
-ClickEventRedirector::ClickEventRedirector(IUnknownPtr punk) 
+ClickEventRedirector::ClickEventRedirector(Office::CommandBarControlPtr punk, const CString& tag, UINT cmd_id) 
 	: m_punk(punk)
+	, m_tag(tag)
+	, m_cmd_id(cmd_id)
 {
 	DispEventAdvise(punk);
 }
@@ -28,16 +30,17 @@ void __stdcall ClickEventRedirector::OnClick(IDispatch* pButton, VARIANT_BOOL* p
 {
 	try
 	{
+		AFX_MANAGE_STATE(AfxGetStaticModuleState());
+		LanguageLock lock(GetAppLanguage(theApp.GetVisioApp()));
+
 		Office::_CommandBarButtonPtr button;
 		pButton->QueryInterface(__uuidof(Office::_CommandBarButton), (void**)&button);
 
 		CComBSTR parameter;
 		button->get_Parameter(&parameter);
-
 		UINT cmd_id = StrToInt(parameter);
 
-		if (cmd_id > 0)
-			theApp.OnCommand(cmd_id);
+		theApp.OnCommand(cmd_id);
 
 	}
 	catch (_com_error)
@@ -46,10 +49,42 @@ void __stdcall ClickEventRedirector::OnClick(IDispatch* pButton, VARIANT_BOOL* p
 	}
 }
 
-void AddinUi::FillMenuItems(Office::CommandBarControlsPtr menu_items, CMenu* popup_menu )
+void AddinUi::UpdateButton(Office::_CommandBarButtonPtr button, UINT cmd_id)
+{
+	VARIANT_BOOL enabled = theApp.IsButtonEnabled(cmd_id);
+	button->put_Enabled(enabled);
+
+	if (theApp.IsCheckbox(cmd_id))
+	{
+		VARIANT_BOOL pressed = theApp.IsButtonPressed(cmd_id);
+		button->put_State(pressed ? Office::msoButtonDown : Office::msoButtonUp);
+	}
+
+	UINT image_id = theApp.GetImageId(cmd_id);
+
+	if (image_id == -1)
+		return;
+
+	IPictureDispPtr picture;
+	IPictureDispPtr mask;
+	if (SUCCEEDED(CustomUiGetPng(MAKEINTRESOURCE(image_id), &picture, &mask)))
+	{
+		try
+		{
+			button->put_Picture(picture);
+			button->put_Mask(mask);
+		}
+		catch (_com_error)
+		{
+			// There Some problems; hope to never get here.
+		}
+	}
+}
+
+void AddinUi::InstallButtons(Office::CommandBarControlsPtr menu_items, CMenu* popup_menu )
 {
 	// For each items in the menu,
-	bool begin_group = false;
+
 	for (UINT i = 0; i < popup_menu->GetMenuItemCount(); ++i)
 	{
 		CMenu* sub_menu = popup_menu->GetSubMenu(i);
@@ -84,36 +119,13 @@ void AddinUi::FillMenuItems(Office::CommandBarControlsPtr menu_items, CMenu* pop
 		tag.Format(L"%s_%d", ADDON_NAME, command_id);
 		item->put_Tag(bstr_t(tag));
 
-		CBitmap bm_picture;
-		// if we are command button
-		Office::MsoControlType item_type;
-		if (SUCCEEDED(item->get_Type(&item_type)) && item_type == Office::msoControlButton && command_id > 0)
-		{
-			IPictureDispPtr picture;
-			IPictureDispPtr mask;
-			if (SUCCEEDED(CustomUiGetPng(MAKEINTRESOURCE(command_id), &picture, &mask)))
-			{
-				try
-				{
-					// cast to button. hopefully we will always succeed here
-					Office::_CommandBarButtonPtr button = item;
+		UpdateButton(item, command_id);
 
-					button->put_Picture(picture);
-					button->put_Mask(mask);
-				}
-				catch (_com_error)
-				{
-					// There Some problems; hope to never get here.
-				}
-			}
-		}
-
-		m_buttons.Add(new ClickEventRedirector(item));
-
+		m_buttons.Add(new ClickEventRedirector(item, tag, command_id));
 	}
 }
 
-void AddinUi::CreateCommandBarsMenu(Visio::IVApplicationPtr app)
+void AddinUi::InstallToolbar(Visio::IVApplicationPtr app)
 {
 	LanguageLock lock(GetAppLanguage(app));
 
@@ -123,21 +135,49 @@ void AddinUi::CreateCommandBarsMenu(Visio::IVApplicationPtr app)
 	menu.LoadMenu(IDR_MENU);
 
 	Office::CommandBarPtr cb;
-	if (SUCCEEDED(cbs->get_Item(variant_t(ADDON_NAME), &cb)))
+	if (FAILED(cbs->get_Item(variant_t(ADDON_NAME), &cb)) || cb == NULL)
+	{
+		if (SUCCEEDED(cbs->Add(variant_t(ADDON_NAME), vtMissing, vtMissing, vtMissing, &cb)))
+			cb->put_Visible(VARIANT_TRUE);
+	}
+
+	if (cb != NULL)
 	{
 		Office::CommandBarControlsPtr controls;
 		cb->get_Controls(&controls);
 
-		FillMenuItems(controls, menu.GetSubMenu(0));
+		InstallButtons(controls, menu.GetSubMenu(0));
 	}
 }
 
-void AddinUi::DestroyCommandBarsMenu()
+void AddinUi::UninstallToolbar()
 {
 	for (size_t i = 0; i < m_buttons.GetCount(); ++i)
 		delete m_buttons[i];
 
 	m_buttons.RemoveAll();
+}
+
+void AddinUi::UpdateButtons()
+{
+	Office::_CommandBarsPtr cbs = theApp.GetVisioApp()->CommandBars;
+
+	for (size_t i = 0; i < m_buttons.GetCount(); ++i)
+	{
+		ClickEventRedirector* button = m_buttons[i];
+
+		Office::CommandBarControlPtr control;
+		cbs->FindControl(vtMissing, vtMissing, variant_t(button->m_tag), vtMissing, &control);
+
+		if (control != button->m_punk)
+		{
+			button->DispEventUnadvise(button->m_punk);
+			button->m_punk = control;
+			button->DispEventAdvise(button->m_punk);
+		}
+
+		UpdateButton(control, button->m_cmd_id);
+	}
 }
 
 HRESULT GetRibbonText(BSTR * RibbonXml)

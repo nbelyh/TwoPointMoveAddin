@@ -6,7 +6,7 @@
 
 #include "AddIn_i.h"
 #include "AddIn_i.c"
-
+#include "lib/UI.h"
 #include "lib/Visio.h"
 
 CComModule _Module;
@@ -102,6 +102,7 @@ struct CAddinApp::Impl
 	{
 		captured = 0;
 		command = 0;
+		need_update = true;
 	}
 
 	Visio::IVApplicationPtr app;
@@ -126,6 +127,16 @@ struct CAddinApp::Impl
 	UINT command;
 	int captured;
 
+	bool need_update;
+
+	void SetNeedUpdate(bool set)
+	{
+		if (ribbon)
+			ribbon->Invalidate();
+		else
+			need_update = set;
+	}
+
 	void OnClick(UINT cmd_id)
 	{
 		while (captured > 0)
@@ -144,7 +155,7 @@ struct CAddinApp::Impl
 			command = cmd_id;
 		}
 
-		ribbon->Invalidate();
+		SetNeedUpdate(true);
 	}
 
 	void RemovePoint()
@@ -235,25 +246,82 @@ struct CAddinApp::Impl
 			}
 		}
 	}
+
+	void OnPointCaptured( Visio::IVShapePtr shape, short row ) 
+	{
+		Point& point = points[captured];
+
+		point.shape = shape;
+		point.row = row;
+
+		Visio::IVCellPtr cell_x = shape->CellsSRC[Visio::visSectionConnectionPts][row][0];
+		double x = cell_x->ResultIU;
+		point.formula_x = cell_x->FormulaU;
+
+		Visio::IVCellPtr cell_y = shape->CellsSRC[Visio::visSectionConnectionPts][row][1];
+		double y = cell_y->ResultIU;
+		point.formula_y = cell_y->FormulaU;
+
+		Visio::IVCellPtr cell_dir_x = shape->CellsSRC[Visio::visSectionConnectionPts][row][2];
+		point.formula_dir_x = cell_dir_x->FormulaU;
+
+		Visio::IVCellPtr cell_dir_y = shape->CellsSRC[Visio::visSectionConnectionPts][row][3];
+		point.formula_dir_y = cell_dir_y->FormulaU;
+
+		shape->XYToPage(x, y, &point.x, &point.y);
+
+		++captured;
+
+		if (captured == 2)
+		{
+			Execute();
+		}
+
+		SetNeedUpdate(true);
+	}
+
+	void OnCommand( UINT id ) 
+	{
+		switch (id)
+		{
+		case ID_About:
+			{
+				CDialog dlg(IDD_DIALOG1);
+				dlg.DoModal();
+				break;
+			}
+
+		default:
+			{
+				OnClick(id);
+				break;
+			}
+		}
+	}
+
+	AddinUi m_ui;
+
+	void SetVisioApp( Visio::IVApplicationPtr app ) 
+	{
+		this->app = app;
+
+		if (app != NULL)
+		{
+			if (GetVisioVersion(app) < 14)
+				m_ui.InstallToolbar(app);
+		}
+
+		if (app == NULL)
+		{
+			m_ui.UninstallToolbar();
+		}
+	}
+
 };
 
 void CAddinApp::OnCommand(UINT id)
 {
-	switch (id)
-	{
-	case ID_About:
-		{
-			CDialog dlg(IDD_DIALOG1);
-			dlg.DoModal();
-			break;
-		}
-
-	default:
-		{
-			m_impl->OnClick(id);
-			break;
-		}
-	}
+	m_impl->OnCommand(id);
 }
 
 Visio::IVApplicationPtr CAddinApp::GetVisioApp()
@@ -263,7 +331,7 @@ Visio::IVApplicationPtr CAddinApp::GetVisioApp()
 
 void CAddinApp::SetVisioApp( Visio::IVApplicationPtr app )
 {
-	m_impl->app = app;
+	m_impl->SetVisioApp(app);
 }
 
 Office::IRibbonUIPtr CAddinApp::GetRibbon()
@@ -296,37 +364,109 @@ int CAddinApp::GetCapturedCount()
 	return m_impl->captured;
 }
 
-void CAddinApp::OnPointCaptured(Visio::IVShapePtr shape, short row )
+void CAddinApp::OnPointCaptured(Visio::IVShapePtr shape, short row)
 {
-	Impl::Point& point = m_impl->points[m_impl->captured];
+	m_impl->OnPointCaptured(shape, row);
+}
 
-	point.shape = shape;
-	point.row = row;
+void CAddinApp::UpdateButtons()
+{
+	m_impl->m_ui.UpdateButtons();
+}
 
-	Visio::IVCellPtr cell_x = shape->CellsSRC[Visio::visSectionConnectionPts][row][0];
-	double x = cell_x->ResultIU;
-	point.formula_x = cell_x->FormulaU;
-
-	Visio::IVCellPtr cell_y = shape->CellsSRC[Visio::visSectionConnectionPts][row][1];
-	double y = cell_y->ResultIU;
-	point.formula_y = cell_y->FormulaU;
-
-	Visio::IVCellPtr cell_dir_x = shape->CellsSRC[Visio::visSectionConnectionPts][row][2];
-	point.formula_dir_x = cell_dir_x->FormulaU;
-
-	Visio::IVCellPtr cell_dir_y = shape->CellsSRC[Visio::visSectionConnectionPts][row][3];
-	point.formula_dir_y = cell_dir_y->FormulaU;
-
-	shape->XYToPage(x, y, &point.x, &point.y);
-
-	++m_impl->captured;
-
-	if (m_impl->captured == 2)
+UINT CAddinApp::GetImageId( UINT cmd_id )
+{
+	switch (cmd_id)
 	{
-		m_impl->Execute();
+	case ID_About:
+		return ID_About;
+
+	case ID_TwoPointsMove:
+		switch (GetCapturedCount())
+		{
+		case 1:
+			return ID_TwoPointsMove_1;
+
+		default:
+			return ID_TwoPointsMove;
+		}
+
+	case ID_TwoPointsCopy:
+		switch (GetCapturedCount())
+		{
+		case 1:
+			return ID_TwoPointsCopy_1;
+
+		default:
+			return ID_TwoPointsCopy;
+		}
 	}
 
-	m_impl->ribbon->Invalidate();
+	return -1;
+}
+
+VARIANT_BOOL CAddinApp::IsButtonEnabled( UINT cmd_id )
+{
+	if (cmd_id == ID_About)
+		return VARIANT_TRUE;
+
+	Visio::IVApplicationPtr app = GetVisioApp();
+
+	Visio::IVDocumentPtr doc;
+	if (FAILED(app->get_ActiveDocument(&doc)) || doc == NULL)
+		return VARIANT_FALSE;
+
+	Visio::VisDocumentTypes doc_type = Visio::visDocTypeInval;
+	if (FAILED(doc->get_Type(&doc_type)) || doc_type == Visio::visDocTypeInval)
+		return VARIANT_FALSE;
+
+	if (FAILED(doc->get_Type(&doc_type)) || doc_type == Visio::visDocTypeInval)
+		return VARIANT_FALSE;
+
+	Visio::IVWindowPtr window;
+	if (FAILED(app->get_ActiveWindow(&window)) || window == NULL)
+		return VARIANT_FALSE;
+
+	if (GetActiveCommand() > 0)
+		return VARIANT_TRUE;
+
+	Visio::IVSelectionPtr selection;
+	if (FAILED(window->get_Selection(&selection)) || selection == NULL)
+		return VARIANT_FALSE;
+
+	long count = 0;
+	if (FAILED(selection->get_Count(&count)) || count == 0)
+		return VARIANT_FALSE;
+
+	return VARIANT_TRUE;
+}
+
+bool CAddinApp::IsCheckbox( UINT cmd_id )
+{
+	switch (cmd_id)
+	{
+	case ID_TwoPointsCopy:
+	case ID_TwoPointsMove:
+		return true;
+
+	default:
+		return false;
+	}
+}
+
+VARIANT_BOOL CAddinApp::IsButtonPressed( UINT cmd_id )
+{
+	return (GetActiveCommand() == cmd_id) ? VARIANT_TRUE : VARIANT_FALSE;
+}
+
+void CAddinApp::SetNeedUpdate( bool set )
+{
+	m_impl->SetNeedUpdate(set);
+}
+
+bool CAddinApp::NeedUpdate()
+{
+	return m_impl->need_update;
 }
 
 CAddinApp theApp;
