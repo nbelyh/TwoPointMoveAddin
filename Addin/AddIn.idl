@@ -1,0 +1,63 @@
+// AddIn.idl : IDL source for AddIn
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (AddIn.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(99567FB1-FBF2-4536-8D12-380955AD705B),
+	version(1.0),
+	helpstring("TwoPointsAddin 1.0 Type Library")
+]
+library AddinLib
+{
+	importlib("stdole2.tlb");
+
+	[
+		object,
+		uuid(741E6B1D-DF6A-4a30-B3B8-BDA4691E847C),
+		dual,
+		pointer_default(unique)
+	]
+	interface ICallbackInterface : IDispatch
+	{
+		[id(1)] 
+		HRESULT OnRibbonButtonClicked([in] IDispatch * RibbonControl);
+
+		[id(2)]
+		HRESULT OnRibbonLoad([in] IDispatch* disp);
+
+		[id(3)]
+		HRESULT OnRibbonLoadImage([in] BSTR pbstrImageId, [out, retval] IPictureDisp ** ppdispImage);
+
+		[id(4)]
+		HRESULT IsRibbonButtonEnabled([in] IDispatch * RibbonControl, [out, retval] VARIANT_BOOL* pResult);
+
+		[id(5)]
+		HRESULT IsRibbonButtonVisible([in] IDispatch * RibbonControl, [out, retval] VARIANT_BOOL* pResult);
+
+		[id(6)]
+		HRESULT GetRibbonLabel([in] IDispatch *pControl, [out, retval] BSTR *pbstrLabel);
+
+		[id(7)]
+		HRESULT OnRibbonCheckboxClicked([in] IDispatch *pControl, [in] VARIANT_BOOL *pvarfPressed);
+
+		[id(8)]
+		HRESULT IsRibbonButtonPressed([in] IDispatch * RibbonControl, [out, retval] VARIANT_BOOL* pResult);
+
+		[id(9)]
+		HRESULT GetRibbonImage([in]IDispatch *pControl, [out, retval] IPictureDisp ** ppdispImage);
+	};
+
+	[
+		uuid(368E397E-D6B9-40f2-8529-51C05C21E24F),
+		helpstring("Connect Class")
+	]
+	coclass Connect
+	{
+		[default] interface ICallbackInterface;
+	};
+};

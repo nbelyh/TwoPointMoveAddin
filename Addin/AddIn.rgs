@@ -1,0 +1,26 @@
+HKCR
+{
+	TwoPointsAddin.Connect.1 = s 'Connect Class'
+	{
+		CLSID = s '{368E397E-D6B9-40f2-8529-51C05C21E24F}'
+	}
+	TwoPointsAddin.Connect = s 'Connect Class'
+	{
+		CLSID = s '{368E397E-D6B9-40f2-8529-51C05C21E24F}'
+		CurVer = s 'TwoPointsAddin.Connect.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove '{368E397E-D6B9-40f2-8529-51C05C21E24F}' = s 'Connect Class'
+		{
+			ProgID = s 'TwoPointsAddin.Connect.1'
+			VersionIndependentProgID = s 'TwoPointsAddin.Connect'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{99567FB1-FBF2-4536-8D12-380955AD705B}'
+		}
+	}
+}
