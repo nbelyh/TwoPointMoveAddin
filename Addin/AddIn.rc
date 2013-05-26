@@ -69,7 +69,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,153,91,50,14
     CONTROL         "<a href=""http://unmanagedvisio.com"">http://unmanagedvisio.com</a>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,7,72,163,14
-    LTEXT           "Расширение для копирования и перемещения фигур по базовой точке для Microsoft Visio.\nCopyright (c) 2013 Белых Николай\n\nРаспространяется под лицензией MIT\n\nБолее подробная информация доступна на сайте UnmanagedVisio.com:",IDC_STATIC,7,7,196,57
+    LTEXT           "Расширение копирования и перемещения фигур по базовой точке для Microsoft Visio.\nCopyright (c) 2013 Белых Николай\n\nРаспространяется под лицензией MIT\n\nБолее подробная информация доступна на сайте UnmanagedVisio.com:",IDC_STATIC,7,7,196,57
 END
 
 
@@ -100,12 +100,74 @@ END
 STRINGTABLE 
 BEGIN
     ID_TwoPointsMove        "Переместить"
-    IDS_BasePointTab        "По базовой точке"
+    IDS_BasePointTab        "Базовая точка"
     ID_TwoPointsCopy        "Копировать"
     ID_About                "О расширении"
 END
 
 #endif    // Russian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// German (Germany) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUT DIALOGEX 0, 0, 192, 112
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,135,91,50,14
+    CONTROL         "<a href=""http://unmanagedvisio.com"">http://unmanagedvisio.com</a>",IDC_SYSLINK1,
+                    "SysLink",WS_TABSTOP,7,72,163,14
+    LTEXT           "Basispunkt Addin fьr Microsoft Visio.\nCopyright (c) 2013 Nikolay Belykh\n\nVerцffentlicht unter MIT-Lizenz\n\nFьr weitere Informationen, besuchen Sie bitte die Website UnmanagedVisio.com:",IDC_STATIC,7,7,178,57
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 185
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 105
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    ID_TwoPointsMove        "Verschieben"
+    IDS_BasePointTab        "Basispunkt"
+    ID_TwoPointsCopy        "Kopieren"
+    ID_About                "Info"
+END
+
+#endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -131,7 +193,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,135,91,50,14
     CONTROL         "<a href=""http://unmanagedvisio.com"">http://unmanagedvisio.com</a>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,7,72,163,14
-    LTEXT           "TwoPoints Addin for Microsoft Visio.\nCopyright (c) 2013 Nikolay Belykh\n\nRelease under MIT license.\n\nFor more information, please visit the site UnmanagedVisio.com:",IDC_STATIC,7,7,178,57
+    LTEXT           "BasePoint move/copy Addin for Microsoft Visio.\nCopyright (c) 2013 Nikolay Belykh\n\nRelease under MIT license.\n\nFor more information, please visit the site UnmanagedVisio.com:",IDC_STATIC,7,7,178,57
 END
 
 
@@ -234,9 +296,9 @@ IDR_ADDIN               REGISTRY                "AddIn.rgs"
 STRINGTABLE 
 BEGIN
     ID_TwoPointsMove        "Move"
-    IDS_BasePointTab        "Two Points"
+    IDS_BasePointTab        "Base Point"
     ID_TwoPointsCopy        "Copy"
-    ID_About                "About..."
+    ID_About                "About"
 END
 
 #endif    // English (U.S.) resources
