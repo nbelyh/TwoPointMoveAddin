@@ -113,9 +113,6 @@ struct CAddinApp::Impl
 		Visio::IVShapePtr shape;
 		short row;
 
-		double x;
-		double y;
-
 		bstr_t formula_x;
 		bstr_t formula_y;
 		bstr_t formula_dir_x;
@@ -192,8 +189,26 @@ struct CAddinApp::Impl
 
 	void Execute()
 	{
-		double dx = points[1].x - points[0].x;
-		double dy = points[1].y - points[0].y;
+		Visio::IVCellPtr cell_x0 = points[0].shape->CellsSRC[Visio::visSectionConnectionPts][points[0].row][0];
+		double x0 = cell_x0->ResultIU;
+
+		Visio::IVCellPtr cell_y0 = points[0].shape->CellsSRC[Visio::visSectionConnectionPts][points[0].row][1];
+		double y0 = cell_y0->ResultIU;
+
+		Visio::IVCellPtr cell_x1 = points[1].shape->CellsSRC[Visio::visSectionConnectionPts][points[1].row][0];
+		double x1 = cell_x1->ResultIU;
+
+		Visio::IVCellPtr cell_y1 = points[1].shape->CellsSRC[Visio::visSectionConnectionPts][points[1].row][1];
+		double y1 = cell_y1->ResultIU;
+
+		double page_x0, page_y0;
+		points[0].shape->XYToPage(x0, y0, &page_x0, &page_y0);
+
+		double page_x1, page_y1;
+		points[1].shape->XYToPage(x1, y1, &page_x1, &page_y1);
+
+		double dx = page_x1 - page_x0;
+		double dy = page_y1 - page_y0;
 
 		Visio::IVWindowPtr window;
 		if (FAILED(app->get_ActiveWindow(&window)) || window == NULL)
@@ -208,7 +223,6 @@ struct CAddinApp::Impl
 
 		case ID_TwoPointsMove:
 			{
-				RemovePoint();
 				RemovePoint();
 
 				selection->Move(dx, dy);
@@ -267,8 +281,6 @@ struct CAddinApp::Impl
 
 		Visio::IVCellPtr cell_dir_y = shape->CellsSRC[Visio::visSectionConnectionPts][row][3];
 		point.formula_dir_y = cell_dir_y->FormulaU;
-
-		shape->XYToPage(x, y, &point.x, &point.y);
 
 		++captured;
 
