@@ -72,6 +72,11 @@ struct CConnect::Impl
 		case (short)(Visio::visEvtApp|Visio::visEvtNonePending):
 			OnNoEventsPending();
 			break;
+
+		case (short)(Visio::visEvtCodeWinPageTurn):
+			theApp.OnCommand(0);
+			break;
+
 		}
 
 		return S_OK;
@@ -134,6 +139,7 @@ struct CConnect::Impl
 		evt_win_activated.Advise(evt_list, Visio::visEvtApp|Visio::visEvtWinActivate, this);
 		evt_win_closed.Advise(evt_list, Visio::visEvtWindow|Visio::visEvtDel, this);
 		evt_win_selection.Advise(evt_list, Visio::visEvtCodeWinSelChange, this);
+		evt_page_turn.Advise(evt_list, Visio::visEvtCodeWinPageTurn, this);
 
 		evt_formula_changed	.Advise(evt_list, Visio::visEvtFormula|Visio::visEvtMod, this);
 		evt_no_events.Advise(evt_list, Visio::visEvtApp|Visio::visEvtNonePending, this);
@@ -157,6 +163,7 @@ struct CConnect::Impl
 		evt_win_activated.Unadvise();
 		evt_win_closed.Unadvise();
 		evt_win_selection.Unadvise();
+		evt_page_turn.Unadvise();
 
 		theApp.SetVisioApp(NULL);
 
@@ -187,6 +194,7 @@ struct CConnect::Impl
 	CVisioEvent	 evt_win_activated;
 	CVisioEvent	 evt_win_closed;
 	CVisioEvent	 evt_win_selection;
+	CVisioEvent	evt_page_turn;
 
 	CVisioEvent	evt_formula_changed;
 	CVisioEvent evt_no_events;
