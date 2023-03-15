@@ -10,14 +10,43 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'x86'
-  buildConfiguration: 'Release'
+- group: sectigo
 
 steps:
 
+- task: DownloadSecureFile@1
+  displayName: Download Certificate
+  inputs:
+    secureFile: 'sectigo2025.pfx'
+
+- task: PowerShell@2
+  displayName: import Certificate
+  inputs:
+    targetType: 'inline'
+    script: |
+      $pfx = "$env:DOWNLOADSECUREFILE_SECUREFILEPATH"
+      $pw = "$(CertPass2025)"
+      $pfxpass = $pw | ConvertTo-SecureString -AsPlainText -Force
+      Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My -Password $pfxpass 
+
 - task: VSBuild@1
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    solution: '**/*.sln'
+    platform: 'x86'
+    configuration: 'Release'
+
+- task: VSBuild@1
+  inputs:
+    solution: '**/*.sln'
+    platform: 'x64'
+    configuration: 'Release'
+
+- task: CopyFiles@2
+  displayName: 'Copy SPFx WebPart to artifacts'
+  inputs:
+    Contents: ship/*.msi
+    flattenFolders: true
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/ship'
+
+- publish: $(Build.ArtifactStagingDirectory)/ship
+  artifact: ship
