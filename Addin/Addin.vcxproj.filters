@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{0d83e1c5-c8ae-4c80-acd1-5364d83a0c83}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{5ef49a93-74a5-4871-83c3-4449214fd8b9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AddIn.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AddIn.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="AddIn.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\icon32.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\copy.png" />
+    <Image Include="res\copy_1.png" />
+    <Image Include="res\copy_icon32.png" />
+    <Image Include="res\copy_icon32_1.png" />
+    <Image Include="res\i_about.png" />
+    <Image Include="res\icon16.png" />
+    <Image Include="res\icon16_1.png" />
+    <Image Include="res\icon32_1.png" />
+    <Image Include="res\move.png" />
+    <Image Include="res\move_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\Ribbon.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib\Language.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\PictureConvert.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\TextFile.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\UI.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Utils.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\Visio.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="AddIn.cpp" />
+    <ClCompile Include="Connect.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lib\Language.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\PictureConvert.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\TextFile.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\UI.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Utils.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Visio.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Connect.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="Addin.idl" />
+  </ItemGroup>
+</Project>
