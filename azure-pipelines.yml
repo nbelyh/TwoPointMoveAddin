@@ -36,15 +36,29 @@ steps:
     platform: 'x86'
     configuration: 'Release'
 
+- task: CopyFiles@2
+  displayName: 'Copy x86 setup'
+  inputs:
+    Contents: x86/Release/*.msi
+    flattenFolders: true
+    TargetFolder: 'ship'
+
 - task: VSBuild@1
-  displayName: Build x65
+  displayName: Build x64
   inputs:
     solution: '**/*.sln'
     platform: 'x64'
     configuration: 'Release'
 
+- task: CopyFiles@2
+  displayName: 'Copy x64 setup'
+  inputs:
+    Contents: x64/Release/*.msi
+    flattenFolders: true
+    TargetFolder: 'ship'
+
 - task: PowerShell@2
-  displayName: Sign setup
+  displayName: Sign setups
   inputs:
     targetType: 'inline'
     script: |
@@ -60,19 +74,12 @@ steps:
         }
       }
       Write-Host "SIGNTOOL " $signtool
-      ForEach ($file in (Get-ChildItem "ship\*.msi"))
+      ForEach ($file in (Get-ChildItem "ship/*.msi"))
       {
         Write-Host $file.FullName
         &$signtool sign /n "Nikolay Belykh" /v /fd sha256 /tr $timestampUrl /td sha256 /d "Visio TwoPoints Addin" /du "https://unmanagedvisio.com" /sha1 C1427D06DE2DF8B4E9878B7CC502094D3C9D2E03 $file.FullName 
       }
 
-- task: CopyFiles@2
-  displayName: 'Copy to artifacts'
-  inputs:
-    Contents: ship/*.msi
-    flattenFolders: true
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/ship'
-
-- publish: $(Build.ArtifactStagingDirectory)/ship
+- publish: ship
   displayName: 'Publish artifacts'
   artifact: ship
