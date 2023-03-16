@@ -53,17 +53,17 @@ steps:
       $signtool = "C:\Program Files (x86)\Windows Kits\8.1\bin\x86\signtool.exe"
       if (!($signtool | Test-Path)) 
       {
-	      $signtool = "C:\Program Files (x86)\Windows Kits\10\App Certification Kit\signtool.exe"
-	      if (!($signtool | Test-Path)) 
-	      {
-	          throw "Cannot find SIGNTOOL"
-	      }
+        $signtool = "C:\Program Files (x86)\Windows Kits\10\App Certification Kit\signtool.exe"
+        if (!($signtool | Test-Path)) 
+        {
+           throw "Cannot find SIGNTOOL"
+        }
       }
       Write-Host "SIGNTOOL " $signtool
       ForEach ($file in (Get-ChildItem "ship\*.msi"))
       {
-	      Write-Host $file.FullName
-	      &$signtool sign /n "Nikolay Belykh" /v /fd sha256 /tr $timestampUrl /td sha256 /d "Visio TwoPoints Addin" /du "https://unmanagedvisio.com" /sha1 C1427D06DE2DF8B4E9878B7CC502094D3C9D2E03 $file.FullName 
+        Write-Host $file.FullName
+        &$signtool sign /n "Nikolay Belykh" /v /fd sha256 /tr $timestampUrl /td sha256 /d "Visio TwoPoints Addin" /du "https://unmanagedvisio.com" /sha1 C1427D06DE2DF8B4E9878B7CC502094D3C9D2E03 $file.FullName 
       }
 
 - task: CopyFiles@2
