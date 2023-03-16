@@ -2836,7 +2836,7 @@ short IVApplication::GetIsVisio32 ( ) {
     return _result;
 }
 
-long IVApplication::GetWindowHandle32 ( ) {
+LONG_PTR IVApplication::GetWindowHandle32 ( ) {
     long _result = 0;
     HRESULT _hr = get_WindowHandle32(&_result);
     if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
@@ -14052,7 +14052,7 @@ short IVWindow::GetWindowHandle ( ) {
     return _result;
 }
 
-long IVWindow::GetWindowHandle32 ( ) {
+LONG_PTR IVWindow::GetWindowHandle32 ( ) {
     long _result = 0;
     HRESULT _hr = get_WindowHandle32(&_result);
     if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));

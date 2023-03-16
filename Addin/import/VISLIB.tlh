@@ -6972,7 +6972,7 @@ IVApplication : IDispatch
     __declspec(property(get=GetIsVisio32))
     short IsVisio32;
     __declspec(property(get=GetWindowHandle32))
-    long WindowHandle32;
+    LONG_PTR WindowHandle32;
     __declspec(property(get=GetInstanceHandle))
     short InstanceHandle;
     __declspec(property(get=GetInstanceHandle32))
@@ -7149,7 +7149,7 @@ IVApplication : IDispatch
     long GetLanguage ( );
     short GetIsVisio16 ( );
     short GetIsVisio32 ( );
-    long GetWindowHandle32 ( );
+    LONG_PTR GetWindowHandle32 ( );
     short GetInstanceHandle ( );
     long GetInstanceHandle32 ( );
     IVUIObjectPtr GetBuiltInMenus ( );
@@ -16881,7 +16881,7 @@ IVWindow : IDispatch
     __declspec(property(get=GetWindowHandle))
     short WindowHandle;
     __declspec(property(get=GetWindowHandle32))
-    long WindowHandle32;
+    LONG_PTR WindowHandle32;
     __declspec(property(get=GetShowRulers,put=PutShowRulers))
     short ShowRulers;
     __declspec(property(get=GetShowGrid,put=PutShowGrid))
@@ -17002,7 +17002,7 @@ IVWindow : IDispatch
     IVEventListPtr GetEventList ( );
     short GetPersistsEvents ( );
     short GetWindowHandle ( );
-    long GetWindowHandle32 ( );
+    LONG_PTR GetWindowHandle32 ( );
     HRESULT Trim ( );
     HRESULT Join ( );
     short GetShowRulers ( );

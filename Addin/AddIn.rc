@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Russian resources
+// Russian (Russia) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
-#ifdef _WIN32
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 #pragma code_page(1251)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -27,7 +25,9 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 //
 
 IDR_RIBBON              TEXT                    "res\\Ribbon.xml"
+
 IDR_RESOURCE_H          TEXT                    "resource.h"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -35,17 +35,22 @@ IDR_RESOURCE_H          TEXT                    "resource.h"
 //
 
 ID_TwoPointsMove        PNG                     "res\\move.png"
+
 ID_TwoPointsMove_1      PNG                     "res\\move_1.png"
+
 ID_TwoPointsCopy        PNG                     "res\\copy.png"
+
 ID_TwoPointsCopy_1      PNG                     "res\\copy_1.png"
+
 ID_About                PNG                     "res\\i_about.png"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
 //
 
-IDR_MENU MENU 
+IDR_MENU MENU
 BEGIN
     POPUP "TwoPoints"
     BEGIN
@@ -69,7 +74,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,153,91,50,14
     CONTROL         "<a href=""http://unmanagedvisio.com"">http://unmanagedvisio.com</a>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,7,72,163,14
-    LTEXT           "Расширение копирования и перемещения фигур по базовой точке для Microsoft Visio.\nCopyright (c) 2013 Белых Николай\n\nРаспространяется под лицензией MIT\n\nБолее подробная информация доступна на сайте UnmanagedVisio.com:",IDC_STATIC,7,7,196,57
+    LTEXT           "Расширение копирования и перемещения фигур по базовой точке для Microsoft Visio.\nCopyright (c) 2013-2023 Белых Николай\n\nРаспространяется под лицензией MIT\n\nБолее подробная информация доступна на сайте UnmanagedVisio.com:",IDC_STATIC,7,7,196,57
 END
 
 
@@ -79,7 +84,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
@@ -97,7 +102,7 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_TwoPointsMove        "Переместить"
     IDS_BasePointTab        "Базовая точка"
@@ -105,7 +110,7 @@ BEGIN
     ID_About                "О расширении"
 END
 
-#endif    // Russian resources
+#endif    // Russian (Russia) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -113,10 +118,8 @@ END
 // German (Germany) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
-#ifdef _WIN32
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -131,7 +134,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,135,91,50,14
     CONTROL         "<a href=""http://unmanagedvisio.com"">http://unmanagedvisio.com</a>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,7,72,163,14
-    LTEXT           "Basispunkt Addin fьr Microsoft Visio.\nCopyright (c) 2013 Nikolay Belykh\n\nVerцffentlicht unter MIT-Lizenz\n\nFьr weitere Informationen, besuchen Sie bitte die Website UnmanagedVisio.com:",IDC_STATIC,7,7,178,57
+    LTEXT           "Basispunkt Addin fьr Microsoft Visio.\nCopyright (c) 2013-2023 Nikolay Belykh\n\nVerцffentlicht unter MIT-Lizenz\n\nFьr weitere Informationen, besuchen Sie bitte die Website UnmanagedVisio.com:",IDC_STATIC,7,7,178,57
 END
 
 
@@ -141,7 +144,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
@@ -159,7 +162,7 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_TwoPointsMove        "Verschieben"
     IDS_BasePointTab        "Basispunkt"
@@ -172,13 +175,11 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -193,7 +194,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,135,91,50,14
     CONTROL         "<a href=""http://unmanagedvisio.com"">http://unmanagedvisio.com</a>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,7,72,163,14
-    LTEXT           "BasePoint move/copy Addin for Microsoft Visio.\nCopyright (c) 2013 Nikolay Belykh\n\nRelease under MIT license.\n\nFor more information, please visit the site UnmanagedVisio.com:",IDC_STATIC,7,7,178,57
+    LTEXT           "BasePoint move/copy Addin for Microsoft Visio.\nCopyright (c) 2013-2023 Nikolay Belykh\n\nRelease under MIT license.\n\nFor more information, please visit the site UnmanagedVisio.com:",IDC_STATIC,7,7,178,57
 END
 
 
@@ -203,7 +204,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
@@ -293,7 +294,7 @@ IDR_ADDIN               REGISTRY                "AddIn.rgs"
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_TwoPointsMove        "Move"
     IDS_BasePointTab        "Base Point"
@@ -301,7 +302,7 @@ BEGIN
     ID_About                "About"
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
