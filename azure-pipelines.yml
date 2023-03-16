@@ -15,12 +15,12 @@ variables:
 steps:
 
 - task: DownloadSecureFile@1
-  displayName: Download Certificate
+  displayName: Download certificate
   inputs:
     secureFile: 'sectigo2025.pfx'
 
 - task: PowerShell@2
-  displayName: import Certificate
+  displayName: import certificate
   inputs:
     targetType: 'inline'
     script: |
@@ -44,7 +44,7 @@ steps:
     configuration: 'Release'
 
 - task: PowerShell@2
-  displayName: import Certificate
+  displayName: Sign setup
   inputs:
     targetType: 'inline'
     script: |
